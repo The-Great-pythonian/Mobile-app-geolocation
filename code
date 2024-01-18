@@ -1,0 +1,325 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+import kivy
+from kivy.app import App
+kivy.require('1.0.8')
+from kivy.config import Config
+Config.set('graphics', 'resizable', 1)
+from kivy.uix.boxlayout import BoxLayout
+from kivy_garden.mapview import MapView, MapMarkerPopup
+from kivy.lang import Builder
+from kivy.uix.screenmanager import ScreenManager, Screen
+from kivy.properties import StringProperty
+
+class MainWindow(Screen):
+
+    def findSite(self,entry):
+        mydict={'LAG069': {'LAT': 6.54115, 'LONG': 3.31054,
+                    'Address': 'N° 4 / N° 16, Tennis Club Road, Off NNPC Road, Ejigbo'},
+         'LAG071': {'LAT': 6.54083, 'LONG': 3.29, 'Address': 'N° 20, Osho Street, Ejigbo Lagos'},
+         'LAG132': {'LAT': 6.55056, 'LONG': 3.2675, 'Address': 'N° 2 Ikotun Egbe Road'},
+         'LAG141': {'LAT': 6.51999, 'LONG': 3.26198, 'Address': 'Plot 9 David Egbetuyi Street Ijegun'},
+         'LAG143': {'LAT': 6.53165, 'LONG': 3.21741,
+                    'Address': 'Open Plot Beside Protek KM 10 Lasua Isheri Road By Afolabi Bus Stop Aimosho Ikotun Lagos'},
+         'LAG144': {'LAT': 6.53805, 'LONG': 3.24222, 'Address': 'N° 21 Omotayo Ogunshiku Abaranje Ikotun'},
+         'LAG145': {'LAT': 6.53861, 'LONG': 3.2675,
+                    'Address': 'N° 4, Adejonwo Street, Car Wash Bus Stop, Abogunloko, Ikotun - Ijegun Road, Lagos'},
+         'LAG146': {'LAT': 6.55194, 'LONG': 3.21761,
+                    'Address': 'N° 21 Akinola Osan Street Off Micheal Ajie Street Egua Ikotun Lagos'},
+         'LAG147': {'LAT': 6.54778, 'LONG': 3.24778,
+                    'Address': 'N° 2 Taiwo Adeniran Street, Off Lateef Bello Street, Opposite Dazy Corner Hotel, Igando Road, Lagos'},
+         'LAG148': {'LAT': 6.55281, 'LONG': 3.21897, 'Address': 'N° 41 Ajaguna Street Ikotun Lagos'},
+         'LAG151': {'LAT': 6.55531, 'LONG': 3.30915, 'Address': 'N° 10 Idimu Road Orisumbare'},
+         'LAG152': {'LAT': 6.56278, 'LONG': 3.28306, 'Address': 'N° 21, Olusegun Street, Tope Itire, Ajangbadi, Lagos'},
+         'LAG154': {'LAT': 6.57168, 'LONG': 3.26377,
+                    'Address': 'N° 6, Prince Adegbola Street, Greenland Estate, Isheri-Olorun, Ikotun, Lagos'},
+         'LAG155': {'LAT': 6.56774, 'LONG': 3.2491,
+                    'Address': 'N° 1 Kareem Street Titi Ogede Street Oko Filling Bus Stop Igado New Town Iyna Ipaja Lagos'},
+         'LAG156': {'LAT': 6.56722, 'LONG': 3.23194,
+                    'Address': 'N° 24 Aribisla Street Egan Off Agric Road Adeola Community Lagos'},
+         'LAG163': {'LAT': 6.57167, 'LONG': 3.25583, 'Address': 'unknown'}, 'LAG164': {'LAT': 6.57831, 'LONG': 3.25927,
+                                                                                       'Address': 'N° 4 Mariam Babatunde Street Idowu Egba Isheri Lasu Express Road'},
+         'LAG207': {'LAT': 6.56444, 'LONG': 3.29694, 'Address': 'Onajade St, Idimu Titum'},
+         'LAG232': {'LAT': 6.54111, 'LONG': 3.29528, 'Address': 'N° 15 Akinwunmi Street Ejigbo'},
+         'LAG235': {'LAT': 6.57722, 'LONG': 3.28, 'Address': 'N° 8, LASU Road, Isheri Olofin'},
+         'LAG237': {'LAT': 6.52472, 'LONG': 3.25333, 'Address': 'N° 39, Matairu Alli Street Ijegun'},
+         'LAG244': {'LAT': 6.54917, 'LONG': 3.23639, 'Address': 'N° 5 Awlaji St Off Akesan Rd Egan'},
+         'LAG290': {'LAT': 6.56972, 'LONG': 3.26972, 'Address': 'Liberty Estate, Ikotun'},
+         'LAG302': {'LAT': 6.535, 'LONG': 3.25083, 'Address': 'N° 1, Ola Street.Asalu Bus Stop Off Abaranje Road'},
+         'LAG327': {'LAT': 6.56694, 'LONG': 3.27611, 'Address': 'Zybite Limited, N° 101 / N° 103, Ikotun Road, Idimu'},
+         'LAG329': {'LAT': 6.55778, 'LONG': 3.25861, 'Address': 'N° 53, Ajewole Street Off Government Road Ikotun'},
+         'LAG331': {'LAT': 6.53861, 'LONG': 3.27972,
+                    'Address': 'N° 12 Alhaji Lateef Lasisi Street, Tayese Estate, Egbe'},
+         'LAG347': {'LAT': 6.5525, 'LONG': 3.29667, 'Address': 'N° 27 Oboye St. Ejigbou Off Pipeline'},
+         'LAG359': {'LAT': 6.51939, 'LONG': 3.29065, 'Address': 'Block 46, Jakande Estate, Isolo'},
+         'LAG384': {'LAT': 6.53, 'LONG': 3.24083, 'Address': 'N° 15 Taiwo Odukoya St.Abaranje Rd,Ikotun'},
+         'LAG385': {'LAT': 6.53055, 'LONG': 3.26306,
+                    'Address': 'N° 1 / N° 3 Irawo - Owuro Church Street, Isheri - Oshun, Ikotun'},
+         'LAG404': {'LAT': 6.5425, 'LONG': 3.25861, 'Address': 'N° 1 Fasali Street, Off Oyefunga, Ikotun Egbe'},
+         'LAG444': {'LAT': 6.53972, 'LONG': 3.22222, 'Address': 'N° 1 Olaoluwa Samuel Avenue Igando, Egan Road'},
+         'LAG609': {'LAT': 6.57222, 'LONG': 3.28833, 'Address': 'N° 7 Rotimi Olaide Avenue Idimu By Pipeline'},
+         'LAG614': {'LAT': 6.55556, 'LONG': 3.27611,
+                    'Address': 'N° 3, Bolarin Street Off Adewalag Street Off Liasu Road Egbe'},
+         'LAG615': {'LAT': 6.55639, 'LONG': 3.2375, 'Address': 'N° 36 Agric Road Igando'},
+         'LAG616': {'LAT': 6.56028, 'LONG': 3.26722,
+                    'Address': 'N° 11, Remilekun Bankole Street, Arida Bus Stop Ikotun Idimu'},
+         'LAG617': {'LAT': 6.54644, 'LONG': 3.27842, 'Address': 'N° 13 Opeloyeru Street Egbe, Ikotun Egbe'},
+         'LAG618': {'LAT': 6.515, 'LONG': 3.25305,
+                    'Address': 'N° 15 Ewenla Street Off Mustapha Street, Off Ijegemo Road, Ijegun'},
+         'LAG619': {'LAT': 6.51358, 'LONG': 3.27518,
+                    'Address': 'Plot Opposite Foursquare Gosple Church N° 36 Ijegun Road Isheri Oshun'},
+         'LAG620': {'LAT': 6.56583, 'LONG': 3.25897, 'Address': 'N° 14 Odo Ikare Street Off Governor Road Ikotun'},
+         'LAG621': {'LAT': 6.56083, 'LONG': 3.24639, 'Address': 'N° 11 Yekini Ariyo Street, Ori Oke Igando'},
+         'LAG622': {'LAT': 6.60402, 'LONG': 3.31556, 'Address': 'unknown'},
+         'LAG623': {'LAT': 6.54944, 'LONG': 3.25917, 'Address': 'N° 78 Ikotun Igando Road Olayinka Yusuf Area'},
+         'LAG624': {'LAT': 6.55278, 'LONG': 3.22917, 'Address': 'N° 24 Titus Fakeye Street, Egan'},
+         'LAG625': {'LAT': 6.56222, 'LONG': 3.2275, 'Address': 'N° 39 Abibatu Street, Masalashi Egan'},
+         'LAG626': {'LAT': 6.56556, 'LONG': 3.23736, 'Address': 'N° 17 Lukeman Jenmi Street Igondo'},
+         'LAG627': {'LAT': 6.52546, 'LONG': 3.23967,
+                    'Address': 'N° 18 Two Brothers Street Ijegun, Ijegun Off Community Road'},
+         'LAG628': {'LAT': 6.50889, 'LONG': 3.26194, 'Address': 'N° 25 Olusoji Oladapo Stree Ijegun'},
+         'LAG629': {'LAT': 6.5125, 'LONG': 3.24333, 'Address': 'N° 14 Mojeed Street Off Oludun Street Ijegun'},
+         'LAG630': {'LAT': 6.52464, 'LONG': 3.23249, 'Address': 'N° 19, Ile Eja Road, Okerube, Ikotun'},
+         'LAG633': {'LAT': 6.53361, 'LONG': 3.25694, 'Address': 'N° 2 Alafia Street Ikotun'},
+         'LAG634': {'LAT': 6.52806, 'LONG': 3.2475, 'Address': 'N° 18 Ebuyemi Street Off Abanranje Road Ikotun'},
+         'LAG635': {'LAT': 6.52611, 'LONG': 3.29278,
+                    'Address': 'N° 61 / N° 69, Maria Okor Street Off Isheri Oshun Road (Voice Of Redemption Church)'},
+         'LAG636': {'LAT': 6.52947, 'LONG': 3.28044, 'Address': 'N° 19 Johnson Street Agodo Ikotun Egbe'},
+         'LAG637': {'LAT': 6.53361, 'LONG': 3.29361, 'Address': 'N° 24 Alabi Oyo Street, Off Ailegun Ejigbo'},
+         'LAG638': {'LAT': 6.54583, 'LONG': 3.30417,
+                    'Address': 'Breath Of God Mission, N° 2 Solution Lane Off Iyalaje Street Ejigbo'},
+         'LAG711': {'LAT': 6.55529, 'LONG': 3.30572, 'Address': 'N° 33, Dauda Ilo Street, Ejigbo'},
+         'LAG721': {'LAT': 6.51667, 'LONG': 3.27972, 'Address': 'N° 2, Sadiku Street, Isheri Oshun, Isolo'},
+         'LAG797': {'LAT': 6.49889, 'LONG': 3.25583,
+                    'Address': 'Open Space At No 2, Emmanuel Ojeabu Street, Ijedodo, Lagos'},
+         'LAG837': {'LAT': 6.50361, 'LONG': 3.20194,
+                    'Address': 'Open Space In N° 2, Solaga Street Victory Estate Off Iba Expressway'},
+         'LAG839': {'LAT': 6.49333, 'LONG': 3.20028,
+                    'Address': 'Plot Beside St. Filimon Nursery & Primary School N° 2, Chief Iwellu Street Off Eze Ifegior Street, Ipaye Estate, Iba, Lagos'},
+         'LAG918B': {'LAT': 6.515, 'LONG': 3.24028, 'Address': 'unknown'},
+         'LAG936': {'LAT': 6.50028, 'LONG': 3.27833, 'Address': 'unknown'},
+         'LAG938': {'LAT': 6.5567, 'LONG': 3.22651, 'Address': 'unknown'}, 'LGS067': {'LAT': 6.57611, 'LONG': 3.28972,
+                                                                                      'Address': 'N° 19, Wale Akano Street, Off Arobaba Street, Pipeline, Idimu'},
+         'LGS082': {'LAT': 6.52836, 'LONG': 3.29794,
+                    'Address': 'Open Space Beside Eckankar, Eckankar Way, Jakande Estate Extension Isolo'},
+         'LGS093': {'LAT': 6.57306, 'LONG': 3.2775,
+                    'Address': 'N° 16, Ikere Street, Isheri-Olofin, Alimosho L.G.A, Lagos State'},
+         'LGS104': {'LAT': 6.52389, 'LONG': 3.27083,
+                    'Address': 'An Open Space At Plot 37, Ikotun Road, Isheri Oshun, Lagos State'},
+         'LGS110': {'LAT': 6.54083, 'LONG': 3.23278, 'Address': 'N° 6, Independent Street, Lasu - Igando Road, Akesan'},
+         'LGS131': {'LAT': 6.50472, 'LONG': 3.25556,
+                    'Address': 'A Corner Piece Of Land At No 17 Abel Olaniyan Str, Off Unity Ijedodo Ikotun Area, Ikotun'},
+         'LGS147': {'LAT': 6.51925, 'LONG': 3.29062,
+                    'Address': 'N° 35, Abraham Okonofua Off Franzoki Street, Jakande Estate, Lagos State'},
+         'LGS151': {'LAT': 6.52417, 'LONG': 3.20944,
+                    'Address': 'Open Plot Of Land Belonging To Mr. Ajayi At 2, Oladele Street, Obadore Bus Stop, Along Igando-Lasu Road, Igando, Lagos'},
+         'LGS152': {'LAT': 6.49917, 'LONG': 3.20306,
+                    'Address': 'An Open Plot Of Land At N° 3, Honourable Kadiri Street, Off Summit Road, Iyana School Bus Stop, LASU - Igando Road, Lagos'},
+         'LGS154': {'LAT': 6.52901, 'LONG': 3.25488,
+                    'Address': 'A Plot Of Land At N° 3 White Disel Off Saint Saviour, Ijegun-Ikotun Road, Ijegun, Lagos State'},
+         'LGS156': {'LAT': 6.51889, 'LONG': 3.24056, 'Address': 'Community Road Ikotun'},
+         'LGS219': {'LAT': 6.5725, 'LONG': 3.24417, 'Address': 'A Plot Land At Igando New Town'},
+         'LGS261': {'LAT': 6.50499, 'LONG': 3.22496, 'Address': 'unknown'}, 'LGS409': {'LAT': 6.5033, 'LONG': 3.26897,
+                                                                                       'Address': 'N° 21, Rafiu Adisa Street, Fagbile Phase 3, Close To Former Natural Hotel, By Transformer Bus Stop, Ijegun-Ikotun'},
+         'LGS636': {'LAT': 6.49528, 'LONG': 3.26361,
+                    'Address': 'N° 18, Oworotimi Area, Isheri Oshun, Isolo, Lagos State'},
+         'LGS720': {'LAT': 6.49833, 'LONG': 3.24222, 'Address': 'unknown'},
+         'LGs753': {'LAT': 6.5325, 'LONG': 3.30972, 'Address': 'unknown'},
+         'LGS777': {'LAT': 6.54556, 'LONG': 3.26444, 'Address': 'unknown'}, 'Lgs887': {'LAT': 6.55713, 'LONG': 3.29249,
+                                                                                       'Address': '3, ALHAJI KAMARU STREET, OFF EJIGBO/IDIMU ROAD, EJIGBO-LAGOS'},
+         'LGS890': {'LAT': 6.58805, 'LONG': 3.27889,
+                    'Address': 'N° 3, Musa Street, Abule Odu, Off Idimu Road, Egbeda, Lagos'},
+         'LGS894': {'LAT': 6.55417, 'LONG': 3.28306, 'Address': 'N° 5, Morning Star Street, Ejigbo, Lagos State'},
+         'LGS778': {'LAT': 6.55214, 'LONG': 3.27337, 'Address': 'unknown'},
+         'LAG937': {'LAT': 6.56181, 'LONG': 3.25392, 'Address': 'unknown'},
+         'LGS647': {'LAT': 6.560183, 'LONG': 3.276795, 'Address': 'unknown'},
+         'LGS961': {'LAT': 6.5501, 'LONG': 3.2419, 'Address': 'unknown'},
+         'LOS032': {'LAT': 6.56564, 'LONG': 3.301658, 'Address': 'unknown'},
+         'LOS083': {'LAT': 6.532932, 'LONG': 3.273806, 'Address': 'unknown'},
+         'LOS087': {'LAT': 6.533382, 'LONG': 3.224492, 'Address': 'unknown'}}
+        if entry == "":
+            self.props1.text = 'enter a site ID'
+        elif entry in mydict:
+            print('found it')
+            self.props1.text =entry.format(mydict[entry])
+            self.props2.text = "%s" % mydict[entry]['Address']
+            self.props3.text = "%f" %mydict[entry]['LAT']
+            print(mydict[entry]['LAT'])
+            self.props4.text ="%f" %mydict[entry]['LONG']
+            self.props9.text = entry.format(mydict[entry])
+        else:
+            self.props1.text = 'not found'
+
+    def mapDraw(self, val1, val2):
+        print(val1)
+        print(val2)
+        self.props5.lat = val1
+        print(self.props5.lat)
+        self.props5.lon = val2
+        print(self.props5.lon)
+        self.props6.lat = val1
+        print(self.props6.lat)
+        self.props6.lon = val2
+        print(self.props6.lon)
+
+class SecondWindow(Screen):
+    def site_detail(self,val3):
+
+        mydict2 = {'LAG069': {'LAT': 6.54115, 'LONG': 3.31054,
+                             'Address': 'N° 4 / N° 16, Tennis Club Road, Off NNPC Road, Ejigbo'},
+                  'LAG071': {'LAT': 6.54083, 'LONG': 3.29, 'Address': 'N° 20, Osho Street, Ejigbo Lagos'},
+                  'LAG132': {'LAT': 6.55056, 'LONG': 3.2675, 'Address': 'N° 2 Ikotun Egbe Road'},
+                  'LAG141': {'LAT': 6.51999, 'LONG': 3.26198, 'Address': 'Plot 9 David Egbetuyi Street Ijegun'},
+                  'LAG143': {'LAT': 6.53165, 'LONG': 3.21741,
+                             'Address': 'Open Plot Beside Protek KM 10 Lasua Isheri Road By Afolabi Bus Stop Aimosho Ikotun Lagos'},
+                  'LAG144': {'LAT': 6.53805, 'LONG': 3.24222, 'Address': 'N° 21 Omotayo Ogunshiku Abaranje Ikotun'},
+                  'LAG145': {'LAT': 6.53861, 'LONG': 3.2675,
+                             'Address': 'N° 4, Adejonwo Street, Car Wash Bus Stop, Abogunloko, Ikotun - Ijegun Road, Lagos'},
+                  'LAG146': {'LAT': 6.55194, 'LONG': 3.21761,
+                             'Address': 'N° 21 Akinola Osan Street Off Micheal Ajie Street Egua Ikotun Lagos'},
+                  'LAG147': {'LAT': 6.54778, 'LONG': 3.24778,
+                             'Address': 'N° 2 Taiwo Adeniran Street, Off Lateef Bello Street, Opposite Dazy Corner Hotel, Igando Road, Lagos'},
+                  'LAG148': {'LAT': 6.55281, 'LONG': 3.21897, 'Address': 'N° 41 Ajaguna Street Ikotun Lagos'},
+                  'LAG151': {'LAT': 6.55531, 'LONG': 3.30915, 'Address': 'N° 10 Idimu Road Orisumbare'},
+                  'LAG152': {'LAT': 6.56278, 'LONG': 3.28306,
+                             'Address': 'N° 21, Olusegun Street, Tope Itire, Ajangbadi, Lagos'},
+                  'LAG154': {'LAT': 6.57168, 'LONG': 3.26377,
+                             'Address': 'N° 6, Prince Adegbola Street, Greenland Estate, Isheri-Olorun, Ikotun, Lagos'},
+                  'LAG155': {'LAT': 6.56774, 'LONG': 3.2491,
+                             'Address': 'N° 1 Kareem Street Titi Ogede Street Oko Filling Bus Stop Igado New Town Iyna Ipaja Lagos'},
+                  'LAG156': {'LAT': 6.56722, 'LONG': 3.23194,
+                             'Address': 'N° 24 Aribisla Street Egan Off Agric Road Adeola Community Lagos'},
+                  'LAG163': {'LAT': 6.57167, 'LONG': 3.25583, 'Address': 'unknown'},
+                  'LAG164': {'LAT': 6.57831, 'LONG': 3.25927,
+                             'Address': 'N° 4 Mariam Babatunde Street Idowu Egba Isheri Lasu Express Road'},
+                  'LAG207': {'LAT': 6.56444, 'LONG': 3.29694, 'Address': 'Onajade St, Idimu Titum'},
+                  'LAG232': {'LAT': 6.54111, 'LONG': 3.29528, 'Address': 'N° 15 Akinwunmi Street Ejigbo'},
+                  'LAG235': {'LAT': 6.57722, 'LONG': 3.28, 'Address': 'N° 8, LASU Road, Isheri Olofin'},
+                  'LAG237': {'LAT': 6.52472, 'LONG': 3.25333, 'Address': 'N° 39, Matairu Alli Street Ijegun'},
+                  'LAG244': {'LAT': 6.54917, 'LONG': 3.23639, 'Address': 'N° 5 Awlaji St Off Akesan Rd Egan'},
+                  'LAG290': {'LAT': 6.56972, 'LONG': 3.26972, 'Address': 'Liberty Estate, Ikotun'},
+                  'LAG302': {'LAT': 6.535, 'LONG': 3.25083,
+                             'Address': 'N° 1, Ola Street.Asalu Bus Stop Off Abaranje Road'},
+                  'LAG327': {'LAT': 6.56694, 'LONG': 3.27611,
+                             'Address': 'Zybite Limited, N° 101 / N° 103, Ikotun Road, Idimu'},
+                  'LAG329': {'LAT': 6.55778, 'LONG': 3.25861,
+                             'Address': 'N° 53, Ajewole Street Off Government Road Ikotun'},
+                  'LAG331': {'LAT': 6.53861, 'LONG': 3.27972,
+                             'Address': 'N° 12 Alhaji Lateef Lasisi Street, Tayese Estate, Egbe'},
+                  'LAG347': {'LAT': 6.5525, 'LONG': 3.29667, 'Address': 'N° 27 Oboye St. Ejigbou Off Pipeline'},
+                  'LAG359': {'LAT': 6.51939, 'LONG': 3.29065, 'Address': 'Block 46, Jakande Estate, Isolo'},
+                  'LAG384': {'LAT': 6.53, 'LONG': 3.24083, 'Address': 'N° 15 Taiwo Odukoya St.Abaranje Rd,Ikotun'},
+                  'LAG385': {'LAT': 6.53055, 'LONG': 3.26306,
+                             'Address': 'N° 1 / N° 3 Irawo - Owuro Church Street, Isheri - Oshun, Ikotun'},
+                  'LAG404': {'LAT': 6.5425, 'LONG': 3.25861,
+                             'Address': 'N° 1 Fasali Street, Off Oyefunga, Ikotun Egbe'},
+                  'LAG444': {'LAT': 6.53972, 'LONG': 3.22222,
+                             'Address': 'N° 1 Olaoluwa Samuel Avenue Igando, Egan Road'},
+                  'LAG609': {'LAT': 6.57222, 'LONG': 3.28833, 'Address': 'N° 7 Rotimi Olaide Avenue Idimu By Pipeline'},
+                  'LAG614': {'LAT': 6.55556, 'LONG': 3.27611,
+                             'Address': 'N° 3, Bolarin Street Off Adewalag Street Off Liasu Road Egbe'},
+                  'LAG615': {'LAT': 6.55639, 'LONG': 3.2375, 'Address': 'N° 36 Agric Road Igando'},
+                  'LAG616': {'LAT': 6.56028, 'LONG': 3.26722,
+                             'Address': 'N° 11, Remilekun Bankole Street, Arida Bus Stop Ikotun Idimu'},
+                  'LAG617': {'LAT': 6.54644, 'LONG': 3.27842, 'Address': 'N° 13 Opeloyeru Street Egbe, Ikotun Egbe'},
+                  'LAG618': {'LAT': 6.515, 'LONG': 3.25305,
+                             'Address': 'N° 15 Ewenla Street Off Mustapha Street, Off Ijegemo Road, Ijegun'},
+                  'LAG619': {'LAT': 6.51358, 'LONG': 3.27518,
+                             'Address': 'Plot Opposite Foursquare Gosple Church N° 36 Ijegun Road Isheri Oshun'},
+                  'LAG620': {'LAT': 6.56583, 'LONG': 3.25897,
+                             'Address': 'N° 14 Odo Ikare Street Off Governor Road Ikotun'},
+                  'LAG621': {'LAT': 6.56083, 'LONG': 3.24639, 'Address': 'N° 11 Yekini Ariyo Street, Ori Oke Igando'},
+                  'LAG622': {'LAT': 6.60402, 'LONG': 3.31556, 'Address': 'unknown'},
+                  'LAG623': {'LAT': 6.54944, 'LONG': 3.25917,
+                             'Address': 'N° 78 Ikotun Igando Road Olayinka Yusuf Area'},
+                  'LAG624': {'LAT': 6.55278, 'LONG': 3.22917, 'Address': 'N° 24 Titus Fakeye Street, Egan'},
+                  'LAG625': {'LAT': 6.56222, 'LONG': 3.2275, 'Address': 'N° 39 Abibatu Street, Masalashi Egan'},
+                  'LAG626': {'LAT': 6.56556, 'LONG': 3.23736, 'Address': 'N° 17 Lukeman Jenmi Street Igondo'},
+                  'LAG627': {'LAT': 6.52546, 'LONG': 3.23967,
+                             'Address': 'N° 18 Two Brothers Street Ijegun, Ijegun Off Community Road'},
+                  'LAG628': {'LAT': 6.50889, 'LONG': 3.26194, 'Address': 'N° 25 Olusoji Oladapo Stree Ijegun'},
+                  'LAG629': {'LAT': 6.5125, 'LONG': 3.24333, 'Address': 'N° 14 Mojeed Street Off Oludun Street Ijegun'},
+                  'LAG630': {'LAT': 6.52464, 'LONG': 3.23249, 'Address': 'N° 19, Ile Eja Road, Okerube, Ikotun'},
+                  'LAG633': {'LAT': 6.53361, 'LONG': 3.25694, 'Address': 'N° 2 Alafia Street Ikotun'},
+                  'LAG634': {'LAT': 6.52806, 'LONG': 3.2475,
+                             'Address': 'N° 18 Ebuyemi Street Off Abanranje Road Ikotun'},
+                  'LAG635': {'LAT': 6.52611, 'LONG': 3.29278,
+                             'Address': 'N° 61 / N° 69, Maria Okor Street Off Isheri Oshun Road (Voice Of Redemption Church)'},
+                  'LAG636': {'LAT': 6.52947, 'LONG': 3.28044, 'Address': 'N° 19 Johnson Street Agodo Ikotun Egbe'},
+                  'LAG637': {'LAT': 6.53361, 'LONG': 3.29361, 'Address': 'N° 24 Alabi Oyo Street, Off Ailegun Ejigbo'},
+                  'LAG638': {'LAT': 6.54583, 'LONG': 3.30417,
+                             'Address': 'Breath Of God Mission, N° 2 Solution Lane Off Iyalaje Street Ejigbo'},
+                  'LAG711': {'LAT': 6.55529, 'LONG': 3.30572, 'Address': 'N° 33, Dauda Ilo Street, Ejigbo'},
+                  'LAG721': {'LAT': 6.51667, 'LONG': 3.27972, 'Address': 'N° 2, Sadiku Street, Isheri Oshun, Isolo'},
+                  'LAG797': {'LAT': 6.49889, 'LONG': 3.25583,
+                             'Address': 'Open Space At No 2, Emmanuel Ojeabu Street, Ijedodo, Lagos'},
+                  'LAG837': {'LAT': 6.50361, 'LONG': 3.20194,
+                             'Address': 'Open Space In N° 2, Solaga Street Victory Estate Off Iba Expressway'},
+                  'LAG839': {'LAT': 6.49333, 'LONG': 3.20028,
+                             'Address': 'Plot Beside St. Filimon Nursery & Primary School N° 2, Chief Iwellu Street Off Eze Ifegior Street, Ipaye Estate, Iba, Lagos'},
+                  'LAG918B': {'LAT': 6.515, 'LONG': 3.24028, 'Address': 'unknown'},
+                  'LAG936': {'LAT': 6.50028, 'LONG': 3.27833, 'Address': 'unknown'},
+                  'LAG938': {'LAT': 6.5567, 'LONG': 3.22651, 'Address': 'unknown'},
+                  'LGS067': {'LAT': 6.57611, 'LONG': 3.28972,
+                             'Address': 'N° 19, Wale Akano Street, Off Arobaba Street, Pipeline, Idimu'},
+                  'LGS082': {'LAT': 6.52836, 'LONG': 3.29794,
+                             'Address': 'Open Space Beside Eckankar, Eckankar Way, Jakande Estate Extension Isolo'},
+                  'LGS093': {'LAT': 6.57306, 'LONG': 3.2775,
+                             'Address': 'N° 16, Ikere Street, Isheri-Olofin, Alimosho L.G.A, Lagos State'},
+                  'LGS104': {'LAT': 6.52389, 'LONG': 3.27083,
+                             'Address': 'An Open Space At Plot 37, Ikotun Road, Isheri Oshun, Lagos State'},
+                  'LGS110': {'LAT': 6.54083, 'LONG': 3.23278,
+                             'Address': 'N° 6, Independent Street, Lasu - Igando Road, Akesan'},
+                  'LGS131': {'LAT': 6.50472, 'LONG': 3.25556,
+                             'Address': 'A Corner Piece Of Land At No 17 Abel Olaniyan Str, Off Unity Ijedodo Ikotun Area, Ikotun'},
+                  'LGS147': {'LAT': 6.51925, 'LONG': 3.29062,
+                             'Address': 'N° 35, Abraham Okonofua Off Franzoki Street, Jakande Estate, Lagos State'},
+                  'LGS151': {'LAT': 6.52417, 'LONG': 3.20944,
+                             'Address': 'Open Plot Of Land Belonging To Mr. Ajayi At 2, Oladele Street, Obadore Bus Stop, Along Igando-Lasu Road, Igando, Lagos'},
+                  'LGS152': {'LAT': 6.49917, 'LONG': 3.20306,
+                             'Address': 'An Open Plot Of Land At N° 3, Honourable Kadiri Street, Off Summit Road, Iyana School Bus Stop, LASU - Igando Road, Lagos'},
+                  'LGS154': {'LAT': 6.52901, 'LONG': 3.25488,
+                             'Address': 'A Plot Of Land At N° 3 White Disel Off Saint Saviour, Ijegun-Ikotun Road, Ijegun, Lagos State'},
+                  'LGS156': {'LAT': 6.51889, 'LONG': 3.24056, 'Address': 'Community Road Ikotun'},
+                  'LGS219': {'LAT': 6.5725, 'LONG': 3.24417, 'Address': 'A Plot Land At Igando New Town'},
+                  'LGS261': {'LAT': 6.50499, 'LONG': 3.22496, 'Address': 'unknown'},
+                  'LGS409': {'LAT': 6.5033, 'LONG': 3.26897,
+                             'Address': 'N° 21, Rafiu Adisa Street, Fagbile Phase 3, Close To Former Natural Hotel, By Transformer Bus Stop, Ijegun-Ikotun'},
+                  'LGS636': {'LAT': 6.49528, 'LONG': 3.26361,
+                             'Address': 'N° 18, Oworotimi Area, Isheri Oshun, Isolo, Lagos State'},
+                  'LGS720': {'LAT': 6.49833, 'LONG': 3.24222, 'Address': 'unknown'},
+                  'LGs753': {'LAT': 6.5325, 'LONG': 3.30972, 'Address': 'unknown'},
+                  'LGS777': {'LAT': 6.54556, 'LONG': 3.26444, 'Address': 'unknown'},
+                  'Lgs887': {'LAT': 6.55713, 'LONG': 3.29249,
+                             'Address': '3, ALHAJI KAMARU STREET, OFF EJIGBO/IDIMU ROAD, EJIGBO-LAGOS'},
+                  'LGS890': {'LAT': 6.58805, 'LONG': 3.27889,
+                             'Address': 'N° 3, Musa Street, Abule Odu, Off Idimu Road, Egbeda, Lagos'},
+                  'LGS894': {'LAT': 6.55417, 'LONG': 3.28306,
+                             'Address': 'N° 5, Morning Star Street, Ejigbo, Lagos State'},
+                  'LGS778': {'LAT': 6.55214, 'LONG': 3.27337, 'Address': 'unknown'},
+                  'LAG937': {'LAT': 6.56181, 'LONG': 3.25392, 'Address': 'unknown'},
+                  'LGS647': {'LAT': 6.560183, 'LONG': 3.276795, 'Address': 'unknown'},
+                  'LGS961': {'LAT': 6.5501, 'LONG': 3.2419, 'Address': 'unknown'},
+                  'LOS032': {'LAT': 6.56564, 'LONG': 3.301658, 'Address': 'unknown'},
+                  'LOS083': {'LAT': 6.532932, 'LONG': 3.273806, 'Address': 'unknown'},
+                  'LOS087': {'LAT': 6.533382, 'LONG': 3.224492, 'Address': 'unknown'}}
+        if val3 == "":
+            self.props1A.text = 'no site ID'
+        elif val3 in mydict2:
+            print('found it')
+            self.props1B.text =val3.format(mydict2[val3])
+            self.props2B.text = "%s" % mydict2[val3]['Address']
+        else:
+            self.props1B.text = 'not found'
+
+
+class WindowManager(ScreenManager):
+    pass
+
+kv = Builder.load_file('main.kv')
+
+
+class MyMainApp(App):
+    def build(self):
+        return kv
+if __name__ == '__main__':
+    MyMainApp().run()
