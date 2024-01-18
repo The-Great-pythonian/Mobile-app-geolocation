@@ -1,0 +1,134 @@
+%%%%%%%%%%%%%%%%%%%%%  main.kv  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+#:import MapView  kivy_garden.mapview.MapView
+#:import MapMarkerPopup  kivy_garden.mapview.MapMarkerPopup
+WindowManager:
+    MainWindow:
+    SecondWindow:
+
+<MainWindow>:
+    name:"main"
+    #put your other codes........
+    props1:A
+    props2:B
+    props3:C
+    props4:D
+    props5:E
+    props6:F
+    props7:G
+    props8:H
+    props9:i
+
+    BoxLayout:
+        TextInput:
+            id:A
+	        font_size: 32
+	        hint_text: "Enter Glo site in Ejigbo"
+	        text: self.text.upper() if self.text is not None else ''
+	        on_text: root.manager.get_screen("second").ids.J.text = self.text
+        TextInput:
+            id:B
+	        font_size: 32
+	        hint_text: "address"
+        TextInput:
+            id:C
+	        font_size: 32
+        TextInput:
+            id:D
+	        font_size: 32
+
+    MapView:
+        id:E
+        size_hint_y:0.8
+        lat:6.52611
+        lon:3.29278
+        zoom:12
+        double_tap_zoom:True
+        MapMarkerPopup:
+            id:F
+            source: "pindropped.png"
+            lat:6.52611
+            lon:3.29278
+            Button:
+                id: i
+                text:
+                on_press:
+                    app.root.current= "second"
+                    root.manager.transition.direction ="left"
+                    root.manager.transition.duration  = 1
+                on_release:
+
+                    #root.manager.get_screen('main').ids.A.text
+
+    BoxLayout:
+        size_hint_y : 0.05
+        Button:
+            id:G
+	        text: "Search"
+        	on_press:root.findSite(A.text)
+        	on_release:root.mapDraw(float(C.text),float(D.text))
+        	on_release:E.center_on(float(C.text),float(D.text))
+        	#this function site_detail belong to the second screen
+        	on_release:root.manager.get_screen('second').site_detail(A.text)
+
+        Button:
+            id:H
+        	text: "clear"
+        	on_press:A.text = B.text = C.text =D.text = ""
+
+    #put your other codes........
+
+
+
+<SecondWindow>:
+    name:"second"
+    props1B:J
+    props2B:K
+    #put your other codes........
+
+    GridLayout:
+        rows: 3
+        cols: 2
+        Button:
+		    background_color:[0,1,0,1]
+	        text: 'site details'
+	        font_size: 32
+	        font_name:"comic"
+            size_hint_y: 0.2
+
+        Button:
+		    background_color:[0,1,0,1]
+	        text: 'site details'
+	        font_size: 32
+	        font_name:"comic"
+            size_hint_y: 0.2
+
+        Button:
+		    background_color:[0,1,0,1]
+	        text: 'Site'
+	        font_size: 32
+	        font_name:"comic"
+            size_hint_y: 0.2
+	    Button:
+	        id : J
+	        font_size: 32
+            size_hint_y: 0.2
+        Button:
+		    background_color:[0,1,0,1]
+	        text: 'ADDRESS'
+	        font_size: 32
+	        font_name:"comic"
+            size_hint_y: 0.2
+	    TextInput:
+	        id : K
+	        font_size: 32
+            size_hint_y: 0.2
+    #put your other codes........
+    BoxLayout:
+        height:"25dp"
+        size_hint_y: None
+        Button:
+            text: "Go back"
+            on_release:
+                app.root.current= "main"
+                root.manager.transition.direction ="right"
+                root.manager.transition.duration  = 1
